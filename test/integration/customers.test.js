@@ -11,10 +11,10 @@ describe('Customer Integration Tests', () => {
     await Customer.sync({ force: true }); // Ensure the database is clean before tests
   });
 
-  describe('POST /customers/signup', () => {
+  describe('POST /customers', () => {
     it('should sign up a new customer', async () => {
       const data = { name: 'Olakunle Dosunmu', email: 'olakunle@dosunmu.com', password: 'password123' };
-      const res = await chai.request(app).post('/customers/signup').send(data);
+      const res = await chai.request(app).post('/customers').send(data);
 
       expect(res).to.have.status(201);
       expect(res.body.customer).to.include({ name: 'Jane Doe', email: 'olakunle@dosunmu.com' });
@@ -22,7 +22,7 @@ describe('Customer Integration Tests', () => {
 
     it('should return an error if email already exists', async () => {
       const data = { name: 'Olakunle Dosunmu', email: 'olakunle@dosunmu.com', password: 'password123' };
-      const res = await chai.request(app).post('/customers/signup').send(data);
+      const res = await chai.request(app).post('/customers').send(data);
 
       expect(res).to.have.status(400);
       expect(res.body).to.have.property('error', 'Error signing up customer');
