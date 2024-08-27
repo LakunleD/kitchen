@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Vendor.hasMany(models.MenuItem, { foreignKey: 'vendor_id' });
     }
+    validPassword(password) {
+      return bcrypt.compare(password, this.password);
+    }
   }
   Vendor.init({
     name: {
@@ -26,9 +29,23 @@ module.exports = (sequelize, DataTypes) => {
     phone: {
       type: DataTypes.STRING,
     },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    }
   }, {
     sequelize,
     modelName: 'Vendor',
+    hooks: {
+      beforeCreate: async (vendor) => {
+        vendor.password = await bcrypt.hash(vendor.password, 10);
+      },
+    },
   });
   return Vendor;
 };
