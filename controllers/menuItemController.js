@@ -3,7 +3,14 @@ const MenuItemService = require('../services/menuItemService');
 class MenuItemController {
   async listMenuItemsByVendor(req, res) {
     try {
-      const menuItems = await MenuItemService.getMenuItemsByVendor(req.params.vendorId);
+      const { vendorId } = req.query;
+      let menuItems;
+      
+      if (vendorId) {
+        menuItems = await MenuItemService.getMenuItemsByVendor(vendorId);
+      } else {
+        menuItems = await MenuItemService.getAllMenuItems();
+      }
       return res.status(200).json(menuItems);
     } catch (error) {
       return res.status(400).json({ error: 'Error ' });
