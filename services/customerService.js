@@ -32,7 +32,7 @@ class CustomerService {
         throw new Error('Invalid email or password');
       }
       const { password: _, ...customerData  } = customer.toJSON();
-      return { customer: customerData, token: generateToken(customer)};
+      return { customer: customerData, token: generateToken(customer, 'customer')};
       
     } catch (error) {
       throw new Error(`Failed to create customer: ${error.message}`);

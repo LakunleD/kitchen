@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { Customer } = require('../models');
+const { Customer, Vendor } = require('../models');
 const { verifyToken } = require('./jwt');
 
 const authMiddleware = async (req, res, next) => {
@@ -10,20 +10,31 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-
     try {
         const decoded = verifyToken(token);
-        //jwt.verify(token, process.env.JWT_SECRET);
-        console.log(decoded);
-        
-        const customer = await Customer.findByPk(decoded.id);
 
-        if (!customer) {
-            return res.status(401).json({ error: 'Invalid token' });
+        const {type, id} = decoded
+        if(type == 'Customer'){
+            const customer = await Customer.findByPk(id);
+
+            if (!customer) {
+                return res.status(401).json({ error: 'Invalid token' });
+            }
+    
+            req.customer = customer;
+            next();
         }
+        else{
+            const vendor = await Vendor.findByPk(id);
 
-        req.customer = customer;
-        next();
+            if (!vendor) {
+                return res.status(401).json({ error: 'Invalid token' });
+            }
+    
+            req.vendor = vendor;
+            next();
+        }
+        
     } catch (error) {
         return res.status(401).json({ error: 'Invalid token' });
     }

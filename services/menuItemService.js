@@ -42,6 +42,14 @@ class MenuItemService {
       throw new Error(`Failed to delete Vendor menu item: ${error.message}`);
     }
   }
+
+  async getAllMenuItems() {
+    try {
+      return await MenuItem.findAll(); 
+    } catch (error) {
+      throw new Error(`Failed to get all menu items: ${error.message}`);
+    }
+  }
 }
 
 module.exports = new MenuItemService();

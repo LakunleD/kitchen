@@ -12,9 +12,23 @@ describe('MenuItem Integration Tests', () => {
   before(async () => {
     await Vendor.sync({ force: true });
     await MenuItem.sync({ force: true });
-    
-    const vendor = await Vendor.create({ name: 'Gourmet Delight', address: '123 Food Street', phone: '555-1234' });
+
+    vendor = await Vendor.create({
+      name: 'Amala house',
+      address: '123 Tobun Street',
+      phone: '080-2339-1224',
+      email: 'amala@restaurant.com',
+      password: 'password12',
+    });
+
     vendorId = vendor.id;
+
+    await MenuItem.create({
+      name: 'Amala',
+      vendor_id: vendorId,
+      description: 'hot blazing amala',
+      price: 1800.00,
+    });
   });
 
   describe('POST /menu-items', () => {
@@ -43,6 +57,24 @@ describe('MenuItem Integration Tests', () => {
       const res = await chai.request(app).delete(`/menu-items/${menuItem.id}`).set('Authorization', 'Bearer your_jwt_token');
 
       expect(res).to.have.status(204);
+    });
+  });
+
+  describe('GET /menu-items', () => {
+    it('should list all menu items', async () => {
+      const res = await chai.request(app).get('/menu-items').set('Authorization', 'Bearer your_jwt_token');
+
+      expect(res).to.have.status(200);
+      expect(res.body).to.be.an('array');
+      expect(res.body[0]).to.include({ name: 'Amala' });
+    });
+
+    it('should filter menu items by vendor when vendorId is provided', async () => {
+      const res = await chai.request(app).get(`/menu-items?vendorId=${vendor.id}`).set('Authorization', 'Bearer your_jwt_token');
+
+      expect(res).to.have.status(200);
+      expect(res.body).to.be.an('array');
+      expect(res.body[0]).to.include({ name: 'Amala', vendor_id: vendor.id });
     });
   });
 });
