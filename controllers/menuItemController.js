@@ -3,8 +3,7 @@ const MenuItemService = require('../services/menuItemService');
 class MenuItemController {
   async listMenuItemsByVendor(req, res) {
     try {
-      const vendor_id = req.vendor.id;
-      console.log('ass', vendor_id);
+      const vendor_id = (req.vendor)? req.vendor.id: null;
       
       let menuItems;
       
