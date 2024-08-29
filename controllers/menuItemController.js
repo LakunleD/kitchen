@@ -3,12 +3,15 @@ const MenuItemService = require('../services/menuItemService');
 class MenuItemController {
   async listMenuItemsByVendor(req, res) {
     try {
-      const { vendorId } = req.query;
+      const vendor_id = req.vendor.id;
+      console.log('ass', vendor_id);
+      
       let menuItems;
       
-      if (vendorId) {
-        menuItems = await MenuItemService.getMenuItemsByVendor(vendorId);
+      if (vendor_id) {
+        menuItems = await MenuItemService.getMenuItemsByVendor(vendor_id);
       } else {
+
         menuItems = await MenuItemService.getAllMenuItems();
       }
       return res.status(200).json(menuItems);
@@ -28,7 +31,15 @@ class MenuItemController {
 
   async createMenuItem(req, res) {
     try {
-      const newMenuItem = await MenuItemService.createMenuItem(req.body);
+      const vendor_id = req.vendor.id;
+      const { name, description, price } = req.body;
+      const data = {
+        name,
+        description,
+        price,
+        vendor_id
+      }
+      const newMenuItem = await MenuItemService.createMenuItem(data);
       return res.status(201).json(newMenuItem);
     } catch (error) {
       return res.status(400).json({ error: 'Error ' });
