@@ -17,7 +17,7 @@ class MenuItemService {
     }
   }
 
-  async createMenuItem(data) {
+  async createMenuItem(data, ) {
     try {
       return await MenuItem.create(data);
     } catch (error) {

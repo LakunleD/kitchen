@@ -14,7 +14,7 @@ const authMiddleware = async (req, res, next) => {
         const decoded = verifyToken(token);
 
         const {type, id} = decoded
-        if(type == 'Customer'){
+        if(type == 'customer'){
             const customer = await Customer.findByPk(id);
 
             if (!customer) {
